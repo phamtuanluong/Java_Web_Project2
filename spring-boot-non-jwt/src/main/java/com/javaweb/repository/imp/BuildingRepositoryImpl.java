@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
@@ -19,10 +21,17 @@ import com.javaweb.utils.StringUtil;
 
 // Tầng Data Access Layer
 @Repository
+@PropertySource("classpath:application.properties")
 public class BuildingRepositoryImpl implements BuildingRepository{
-	static final String DB_URL = "jdbc:mysql://localhost:3306/estatebasic";
-	static final String USER = "root";
-	static final String PASS = "123456";
+	
+	@Value("${spring.datasource.url}")
+	private String DB_URL;
+	
+	@Value("${spring.datasource.username}")
+	private String USER;
+	
+	@Value("${spring.datasource.password}")
+	private String PASS;
 	
 	public static void joinTable(BuildingSearchBuilder buildingSearchBuilder, StringBuilder sql) {
 		Long staffId = buildingSearchBuilder.getStaffId();
@@ -97,20 +106,11 @@ public class BuildingRepositoryImpl implements BuildingRepository{
 		
 		List<String> typeCode = buildingSearchBuilder.getTypeCode();
 		if(typeCode != null && typeCode.size() != 0) {
-			List<String> code = new ArrayList<>();
-			for(String item : typeCode) {
-				code.add("'" + item + "'");
-			}
-			where.append(" AND renttype.code IN (" + String.join(",", code) + ") ");
+			where.append("AND (");
+			String sql = typeCode.stream().map(it -> "renttype.code like " + "'%" + it + "%' ").collect(Collectors.joining(" OR "));
+			where.append(sql);			
+			where.append(" ) ");
 		}
-		
-//		java 8
-//		if(typeCode != null && typeCode.size() != 0) {
-//			where.append("AND (");
-//			String sql = typeCode.stream().map(it -> "renttype.code like " + "'%" + it + "%' ").collect(Collectors.joining(" OR "));
-//			where.append(sql);			
-//			where.append(" ) ");
-//		}
 	}
 	
 	@Override
@@ -131,7 +131,6 @@ public class BuildingRepositoryImpl implements BuildingRepository{
 				buildingEntity.setName(rs.getString("b.name"));
 				buildingEntity.setStreet(rs.getString("b.street"));
 				buildingEntity.setWard(rs.getString("b.ward"));
-				buildingEntity.setDistrictId(rs.getLong("b.districtid"));
 				buildingEntity.setFloorarea(rs.getLong("b.floorarea"));
 				buildingEntity.setRentprice(rs.getLong("b.rentprice"));
 				buildingEntity.setRentArea(rs.getString("b.rentArea"));
