@@ -26,14 +26,14 @@ public class BuildingAPI {
 	@Value("${dev.pham}")
 	private String data;
 	
-	@GetMapping("/api/building")
+	@GetMapping(value = "/api/building")
 	public List<BuildingDTO> getBuilding(@RequestParam Map<String, Object> params,
 										@RequestParam(name = "typeCode", required = false) List<String> typeCode) {
 		List<BuildingDTO> result = buildingService.findAll(params, typeCode);
 		return result;
 	}
 	
-	@DeleteMapping("/api/building/{id}")
+	@DeleteMapping(value = "/api/building/{id}")
 	public void deleteBuilding(@PathVariable Long id) {
 		System.out.print(data); 
 	}
