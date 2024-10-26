@@ -1,4 +1,4 @@
-package com.javaweb.repository.imp;
+package com.javaweb.repository.custom.imp;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -15,18 +15,21 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
 import com.javaweb.repository.BuildingRepository;
+import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.utils.StringUtil;
 
 // Tầng Data Access Layer
 @Repository
+@Primary
 @PropertySource("classpath:application.properties")
-public class JDBCBuildingRepositoryImpl implements BuildingRepository{
+public class BuildingRepositoryImpl implements BuildingRepositoryCustom{
 	
 	@Value("${spring.datasource.url}")
 	private String DB_URL;
@@ -120,7 +123,7 @@ public class JDBCBuildingRepositoryImpl implements BuildingRepository{
 		}
 	}
 	
-	@Override
+//	@Override
 	public List<BuildingEntity> findAll(BuildingSearchBuilder buildingSearchBuilder) {
 		StringBuilder sql = new StringBuilder("SELECT b.* FROM building b ");
 		joinTable(buildingSearchBuilder, sql);

@@ -1,4 +1,4 @@
-package com.javaweb.repository.imp;
+package com.javaweb.repository.custom.imp;
 
 
 public class RentAreaRepositoryImpl {
