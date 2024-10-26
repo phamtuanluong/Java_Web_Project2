@@ -33,9 +33,6 @@ public class BuildingAPI {
 	@Autowired
 	private BuildingService buildingService;
 	
-	@Value("${dev.pham}")
-	private String data;
-	
 	@GetMapping(value = "/api/building")
 	public List<BuildingDTO> getBuilding(@RequestParam Map<String, Object> params,
 										@RequestParam(name = "typeCode", required = false) List<String> typeCode) {
